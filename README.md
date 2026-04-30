@@ -40,8 +40,6 @@ To focus on the core mechanics of HTTP, this implementation includes several spe
 
 ## Usage
 
-*(Note: Add your specific run commands here once your code is finalized)*
-
 1. Clone the repository.
 2. Ensure you have Python 3 installed.
 3. Run the server script (e.g., `python3 your_server_file.py`), which binds to `localhost` (127.0.0.1) on port 8000.
