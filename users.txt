@@ -1,0 +1,2 @@
+mike,password
+dave,secret
