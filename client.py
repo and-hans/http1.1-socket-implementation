@@ -1,12 +1,11 @@
-# automated_client_tests.py
+# client_starter.py
 
 import socket
-import base64
-import time
+import base64  # imported as required
 
 HOST = '127.0.0.1'
 PORT = 8000
-BUF_SIZE = 1024
+BUF_SIZE = 1024  # hard-coded message size limit
 
 
 def DELETE(resource_path: str, resource_host: str="www.example.com", username=None, password=None):
@@ -70,71 +69,36 @@ def INVALID():
     ).encode("utf-8")
 
 
-def send_request(request, description):
-    """Send a request and print the response with description"""
-    print(f"\n{'='*70}")
-    print(f"TEST: {description}")
-    print(f"{'='*70}")
-    
-    try:
-        with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-            s.connect((HOST, PORT))
-            s.sendall(request)
-            response = s.recv(BUF_SIZE)
-            print(response.decode("utf-8", errors="replace"))
-    except Exception as e:
-        print(f"ERROR: {e}")
-    
-    time.sleep(0.1)  # Small delay between requests
-
-
 def main():
-    print("Starting automated HTTP client tests...")
-    print(f"Connecting to {HOST}:{PORT}")
-    
-    # GET Tests
-    send_request(GET("/user/file1.txt"), "GET - Successful (200) request")
-    send_request(GET("/user/nonexistentfile.txt"), "GET - Not Found (404) request")
-    
-    # HEAD Tests
-    send_request(HEAD("/user/file1.txt"), "HEAD - Successful (200) request")
-    send_request(HEAD("/user/nonexistentfile.txt"), "HEAD - Not Found (404) request")
-    
-    # POST Tests
-    send_request(POST("water:bottle", "/simple_form"), "POST - Successful (201) request")
-    send_request(POST("water:bottle", "/user"), "POST - Bad Request (400) - non-/simple_form path")
-    send_request(POST("water", "/simple_form"), "POST - Bad Request (400) - no colon in body")
-    send_request(POST("water::bottle", "/simple_form"), "POST - Bad Request (400) - multiple colons")
-    
-    # PUT Tests
-    send_request(PUT("This is the content of the file.", "/user/myfile.txt"), 
-                 "PUT - Created (201) - new file")
-    send_request(PUT("Short", "/user/myfile.txt"), 
-                 "PUT - Success (200) - overwrite existing file")
-    send_request(PUT("Invalid content", "/invalid_dir/myfile.txt"), 
-                 "PUT - Bad Request (400) - invalid directory")
-    send_request(PUT("No filename", "/user/"), 
-                 "PUT - Bad Request (400) - no filename")
-    
-    # DELETE Tests
-    send_request(DELETE("/del.txt", "example.com", "mike", "password"), 
-                 "DELETE - Forbidden (403) - file not in user directory")
-    send_request(DELETE("/user/notexist.txt", "example.com", "mike", "password"), 
-                 "DELETE - Not Found (404) - file does not exist")
-    send_request(DELETE("/user/del.txt", "example.com", "mike", "wrongpassword"), 
-                 "DELETE - Unauthorized (401) - invalid password")
-    send_request(DELETE("/user/del.txt", "example.com", "mo", "password"), 
-                 "DELETE - Unauthorized (401) - invalid username")
-    send_request(DELETE("/user/del.txt", "example.com", "mike", "password"), 
-                 "DELETE - Success (200)")
-    
-    # INVALID Test
-    send_request(INVALID(), "INVALID - Method Not Allowed (405)")
-    
-    print(f"\n{'='*70}")
-    print("All tests completed!")
-    print(f"{'='*70}")
+    # request = GET("/user/file1.txt")  # successful (200) GET request
+    # request = GET("/user/nonexistentfile.txt")  # unsuccessful (404) GET request
 
+    # request = HEAD("/user/file1.txt")  # successful (200) HEAD request
+    # request = HEAD("/user/nonexistentfile.txt")  # unsuccessful (404) HEAD request
+
+    # request = POST("water:bottle", "/simple_form")  # successsful (201) POST request
+    # request = POST("water:bottle", "/user")  # unsuccessful (400) POST request (to non-/simple_form path)
+    # request = POST("water", "/simple_form")  # unsuccessful (400) POST request (no colon in body)
+    # request = POST("water::bottle", "/simple_form")  # unsuccessful (400) POST request (no colon in body)
+
+    # request = PUT("This is the content of the file.", "/user/myfile.txt")  # successful (201) PUT request (creating new file)
+    # request = PUT("Short", "/user/myfile.txt")  # successful (200) PUT request (overwriting existing file)
+    # request = PUT("Invalid content", "/invalid_dir/myfile.txt")  # unsuccessful (400) PUT request (invalid directory)
+    # request = PUT("No filename", "/user/")  # unsuccessful (400) PUT request (no provided filename)
+
+    # request = DELETE("/del.txt", "example.com", "mike", "password")  # unsuccessful (403) DELETE request (file not in user directory)
+    # request = DELETE("/user/notexist.txt", "example.com", "mike", "password")  # unsuccessful (404) DELETE request (file does not exist)
+    # request = DELETE("/user/del.txt", "example.com", "mike", "wrongpassword")  # unsuccessful (401) DELETE request (invalid password)
+    # request = DELETE("/user/del.txt", "example.com", "mo", "password")  # unsuccessful (401) DELETE request (invalid username)
+    # request = DELETE("/user/del.txt", "example.com", "mike", "password")  # successful (200) DELETE request
+
+    request = INVALID()  # malformed (405) request
+
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((HOST, PORT))
+        s.sendall(request)
+        response = s.recv(BUF_SIZE)
+        print(response.decode("utf-8", errors="replace"))
 
 if __name__ == "__main__":
     main()
