@@ -42,5 +42,6 @@ To focus on the core mechanics of HTTP, this implementation includes several spe
 
 1. Clone the repository.
 2. Ensure you have Python 3 installed.
-3. Run the server script (e.g., `python3 your_server_file.py`), which binds to `localhost` (127.0.0.1) on port 8000.
+3. Run the server script (`python3 server.py`), which binds to `localhost` (127.0.0.1) on port 8000.
 4. Ensure a `users.txt` file and a `/user/` directory exist in the server's root folder for DELETE and PUT operations to function correctly.
+5. To see sample requests and responses being sent and returned from the server, uncomment a line of code in the `client.py` file and run the script (`python3 client.py`) to run a test.
